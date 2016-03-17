@@ -1,13 +1,19 @@
 package com.example.android.sunshine.app;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -50,6 +56,8 @@ public class MainActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        private ArrayAdapter<String> adapter;
+
         public PlaceholderFragment() {
         }
 
@@ -57,6 +65,38 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            // Dummy data for ListView - "Day, Weather, high/low"
+            String[] weatherForecastArray = {
+                    "Today - Rainy - 37/11",
+                    "Tomorrow - Foggy - 33/16",
+                    "Sat - Sunny - 34/23",
+                    "Sun - Sunny - 40/27",
+                    "Mon - Cloudy - 34/21",
+                    "Tue - Sunny - 42/24",
+                    "Wed - Sunny - 38/29"
+            };
+
+            // Creating an ArrayList
+            List<String> weeklyForecast = new ArrayList<String>(
+                    Arrays.asList(weatherForecastArray)
+            );
+
+            /**
+             *  Create a new ArrayAdapter -
+             *  @params:
+             *  Current context (fragment's parent activity),
+             *  ID of list item layout,
+             *  ID of textview to populate,
+             *  String Data
+             */
+            adapter = new ArrayAdapter<String>(getActivity(),
+                    R.layout.list_item_forecast,R.id.list_item_forecast_textview,weeklyForecast);
+
+            // Attach adapter to ListView
+            ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
+            listView.setAdapter(adapter);
+
             return rootView;
         }
     }
