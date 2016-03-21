@@ -4,6 +4,7 @@
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
     <string name="sunshine">Hello Sunshine</string>
+    <string name="APIKEY">454281808638c9db5461cbc6213f15ef</string>
     <string name="action_settings">Settings</string>
 
 </resources>
