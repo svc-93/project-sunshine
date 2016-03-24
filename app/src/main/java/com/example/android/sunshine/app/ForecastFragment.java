@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -29,6 +32,36 @@ public class ForecastFragment extends Fragment {
 
     public ForecastFragment() {
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        // Fragment method to handle menu events
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.forecastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_refresh) {
+            new FetchWeatherTask().execute();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +118,7 @@ public class ForecastFragment extends Fragment {
             try{
                 // Construct the URL for query
                 String baseUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?q=560024,india&mode=json&units=metric&cnt=7";
-                String apikey = "&APPID=" + R.string.APIKEY;
+                String apikey = "&APPID=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
                 URL url = new URL(baseUrl.concat(apikey));
 
                 // Create request to url and open the connection
@@ -114,6 +147,7 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJson = buffer.toString();
+                Log.v(LOG_TAG, forecastJson);
             } catch(IOException e) {
                 Log.e(LOG_TAG, "Error", e);
                 // if code didn't retrieve the weather data, no use parsing
