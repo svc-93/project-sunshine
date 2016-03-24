@@ -1,5 +1,6 @@
 package com.example.android.sunshine.app;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -55,7 +56,8 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute();
+            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+            fetchWeatherTask.execute("560024");
             return true;
         }
 
@@ -102,12 +104,18 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchWeatherTask extends AsyncTask<Void, Void, Void>{
+    public class FetchWeatherTask extends AsyncTask<String, Void, Void>{
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
         @Override
-        protected Void doInBackground(Void... params){
+        protected Void doInBackground(String... params){
+
+            // Verify that zipcode is provided
+            if(params.length==0){
+                return null;
+            }
+
             // Add networking code snippet here
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -115,11 +123,32 @@ public class ForecastFragment extends Fragment {
             // Will contain the raw JSON response as a String
             String forecastJson = null;
 
+            String mode = "json";
+            String units = "metric";
+            int days = 7;
+
             try{
                 // Construct the URL for query
-                String baseUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?q=560024,india&mode=json&units=metric&cnt=7";
-                String apikey = "&APPID=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
-                URL url = new URL(baseUrl.concat(apikey));
+                final String baseUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+                final String query_param = "q";
+                final String mode_param = "mode";
+                final String units_param = "units";
+                final String count_param = "cnt";
+                final String appid_param = "APPID";
+
+                // Build URI with query params
+                Uri uri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(query_param, params[0])
+                        .appendQueryParameter(mode_param, mode)
+                        .appendQueryParameter(units_param, units)
+                        .appendQueryParameter(count_param, Integer.toString(days))
+                        .appendQueryParameter(appid_param, BuildConfig.OPEN_WEATHER_MAP_API_KEY )
+                        .build();
+
+                // Build URL
+                URL url = new URL(uri.toString());
+                Log.v(LOG_TAG, uri.toString());
+
 
                 // Create request to url and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
