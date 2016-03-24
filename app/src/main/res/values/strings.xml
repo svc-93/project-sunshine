@@ -6,5 +6,6 @@
     <string name="sunshine">Hello Sunshine</string>
     <string name="APIKEY">454281808638c9db5461cbc6213f15ef</string>
     <string name="action_settings">Settings</string>
+    <string name="action_refresh" translatable="false">Refresh</string>
 
 </resources>
