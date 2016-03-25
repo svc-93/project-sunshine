@@ -103,6 +103,7 @@ public class ForecastFragment extends Fragment {
         adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item_forecast,R.id.list_item_forecast_textview,weeklyForecast);
 
+
         // Attach adapter to ListView
         ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
         listView.setAdapter(adapter);
@@ -207,7 +208,7 @@ public class ForecastFragment extends Fragment {
             }
 
             for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
+//                Log.v(LOG_TAG, "Forecast entry: " + s);
             }
             return resultStrs;
 
@@ -252,7 +253,7 @@ public class ForecastFragment extends Fragment {
 
                 // Build URL
                 URL url = new URL(uri.toString());
-                Log.v(LOG_TAG, uri.toString());
+//                Log.v(LOG_TAG, uri.toString());
 
 
                 // Create request to url and open the connection
@@ -281,7 +282,7 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJson = buffer.toString();
-                Log.v(LOG_TAG, forecastJson);
+//                Log.v(LOG_TAG, forecastJson);
             } catch(IOException e) {
                 Log.e(LOG_TAG, "Error", e);
                 // if code didn't retrieve the weather data, no use parsing
@@ -310,6 +311,17 @@ public class ForecastFragment extends Fragment {
             return null;
         }
 
-
+        @Override
+        protected void onPostExecute(String[] strings) {
+            // Update adapter with values
+            if(strings!=null){
+                // Clear previous values
+                adapter.clear();
+                // Add new values
+                for (String dailyForecast: strings) {
+                    adapter.add(dailyForecast);
+                }
+            }
+        }
     }
 }
